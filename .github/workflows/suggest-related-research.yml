@@ -1,0 +1,93 @@
+name: Suggest Related Research
+
+on:
+  push:
+    paths:
+      - 'papers/**.md'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'papers/**.md'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  suggest-related-research:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Get changed paper files
+        id: changed-files
+        uses: tj-actions/changed-files@v44
+        with:
+          files: |
+            papers/**.md
+          files_ignore: |
+            papers/README.md
+      
+      - name: Process new or modified papers
+        if: steps.changed-files.outputs.any_changed == 'true'
+        run: |
+          echo "Processing changed papers..."
+          for file in ${{ steps.changed-files.outputs.all_changed_files }}; do
+            echo "Processing $file"
+            python scripts/suggest_related_research.py "$file"
+          done
+      
+      - name: Check for changes
+        id: git-check
+        run: |
+          git diff --quiet papers/ || echo "changes=true" >> $GITHUB_OUTPUT
+      
+      - name: Create Pull Request
+        if: steps.git-check.outputs.changes == 'true' && github.event_name == 'push'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "Add related research suggestions"
+          title: "🤖 Add related research suggestions"
+          body: |
+            This PR was automatically created by the research bot.
+            
+            ## Changes
+            
+            The bot has analyzed new or modified papers in the `papers/` directory and added related research suggestions based on keyword matching.
+            
+            ## Review
+            
+            Please review the suggested related research and:
+            - Verify that the suggestions are relevant
+            - Add or remove suggestions as needed
+            - Update the references if necessary
+            
+            Once reviewed, merge this PR to update the papers with related research context.
+          branch: bot/add-related-research
+          delete-branch: true
+          labels: |
+            automated
+            research-bot
+      
+      - name: Comment on PR (if triggered by PR)
+        if: steps.git-check.outputs.changes == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🤖 The research bot has analyzed the papers in this PR. Related research suggestions have been added automatically. Please review the changes.'
+            })
