@@ -89,3 +89,49 @@ python scripts/suggest_related_research.py papers/your-paper.md
 
 - Python 3.11+
 - GitHub Actions (automatically configured)
+
+## Quick Start
+
+### For Contributors
+
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/CollectiveReview/citation_context.git
+   cd citation_context
+   ```
+
+2. **Add a paper**: Create a new markdown file in `papers/`:
+   ```bash
+   cp papers/smith2023-deep-learning-citation.md papers/my-paper.md
+   # Edit the file with your paper details
+   ```
+
+3. **Test locally** (optional):
+   ```bash
+   python scripts/suggest_related_research.py papers/my-paper.md
+   ```
+
+4. **Push to trigger the bot**:
+   ```bash
+   git add papers/my-paper.md
+   git commit -m "Add paper: My Paper Title"
+   git push
+   ```
+
+5. **Review the PR**: The bot will create a PR with related research suggestions!
+
+### For Maintainers
+
+To expand the bot's knowledge:
+
+1. Add new research to `related_research/` following the template
+2. Include comprehensive keywords for better matching
+3. The bot will use this research for future paper analysis
+
+## Example
+
+See `papers/smith2023-deep-learning-citation.md` and `papers/lee2022-graph-recommendation.md` for example paper formats.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
