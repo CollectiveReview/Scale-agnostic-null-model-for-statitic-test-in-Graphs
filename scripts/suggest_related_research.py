@@ -11,6 +11,21 @@ from typing import List, Dict, Tuple
 from collections import Counter
 
 
+# Common English stopwords to exclude from keyword extraction
+STOPWORDS = {
+    'that', 'this', 'with', 'from', 'have', 'been', 'were', 'are', 'was',
+    'for', 'and', 'the', 'to', 'of', 'in', 'a', 'is', 'it', 'as', 'on', 'by',
+    'an', 'be', 'or', 'at', 'which', 'has', 'can', 'not', 'but', 'will',
+    'all', 'would', 'their', 'there', 'what', 'so', 'up', 'out', 'if', 'about',
+    'who', 'get', 'which', 'when', 'make', 'can', 'like', 'time', 'no', 'just',
+    'him', 'know', 'take', 'people', 'into', 'year', 'your', 'good', 'some',
+    'could', 'them', 'see', 'other', 'than', 'then', 'now', 'look', 'only',
+    'come', 'its', 'over', 'think', 'also', 'back', 'after', 'use', 'two',
+    'how', 'our', 'work', 'first', 'well', 'way', 'even', 'new', 'want',
+    'because', 'any', 'these', 'give', 'day', 'most', 'us'
+}
+
+
 def extract_keywords(text: str) -> List[str]:
     """Extract keywords from text by finding significant words."""
     # Remove markdown formatting
@@ -18,8 +33,7 @@ def extract_keywords(text: str) -> List[str]:
     # Convert to lowercase and split into words
     words = re.findall(r'\b[a-z]{4,}\b', text.lower())
     # Filter common words
-    stopwords = {'that', 'this', 'with', 'from', 'have', 'been', 'were', 'are', 'was', 'for', 'and', 'the', 'to', 'of', 'in', 'a', 'is', 'it', 'as', 'on', 'by'}
-    keywords = [w for w in words if w not in stopwords]
+    keywords = [w for w in words if w not in STOPWORDS]
     return keywords
 
 
@@ -56,12 +70,16 @@ def find_related_research(paper_content: str, related_research_dir: Path) -> Lis
         
         research_content = read_paper_content(research_file)
         research_keywords = extract_keywords(research_content)
+        research_keyword_counts = Counter(research_keywords)
         
         # Calculate relevance score based on common keywords
         common_keywords = set(paper_keywords) & set(research_keywords)
         if common_keywords:
-            # Weight by frequency in both documents
-            score = sum(paper_keyword_counts[kw] for kw in common_keywords)
+            # Weight by frequency in both documents for balanced scoring
+            score = sum(
+                paper_keyword_counts[kw] * research_keyword_counts[kw]
+                for kw in common_keywords
+            )
             research_scores.append((research_file.name, score))
     
     # Sort by score (highest first)
@@ -122,9 +140,8 @@ def update_paper_with_related_work(paper_filepath: Path, related_research_dir: P
     
     if not related_files:
         print(f"No related research found for {paper_filepath.name}")
-        # Still add an empty section
     
-    # Generate Related Work section
+    # Generate Related Work section (will create placeholder if no research found)
     related_work_section = generate_related_work_section(related_files, related_research_dir)
     
     # Add the section at the end of the file
