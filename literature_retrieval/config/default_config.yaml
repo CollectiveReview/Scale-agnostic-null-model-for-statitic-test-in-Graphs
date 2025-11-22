@@ -1,0 +1,87 @@
+# Configuration for Literature Retrieval Automation
+
+# Search Configuration
+search:
+  # Sources to search (semantic_scholar, arxiv, crossref)
+  sources:
+    - semantic_scholar
+    - arxiv
+    - crossref
+  
+  # Number of papers to retrieve per source
+  limit_per_source: 10
+  
+  # Maximum total papers to process
+  max_papers: 20
+
+# Semantic Scholar API
+semantic_scholar:
+  # API key (optional, can also use SEMANTIC_SCHOLAR_API_KEY env var)
+  api_key: null
+
+# Relevance Scoring
+relevance:
+  # Scorer type: scibert or simple
+  scorer_type: scibert
+  
+  # SciBERT model name
+  scibert_model: allenai/scibert_scivocab_uncased
+  
+  # Number of top papers to keep after scoring
+  top_k: 10
+
+# LLM Analysis
+llm:
+  # Provider: openai, anthropic, or none
+  provider: openai
+  
+  # Model name
+  model: gpt-4-turbo-preview
+  
+  # API key (can also use OPENAI_API_KEY or ANTHROPIC_API_KEY env var)
+  api_key: null
+  
+  # Enable LLM analysis
+  enabled: true
+  
+  # Analysis type: relevance, summary, critique
+  analysis_type: relevance
+  
+  # Maximum papers to analyze with LLM (can be expensive)
+  max_analyze: 5
+
+# GitHub Integration
+github:
+  # Repository owner
+  repo_owner: CollectiveReview
+  
+  # Repository name
+  repo_name: Scale-agnostic-null-model-for-statitic-test-in-Graphs
+  
+  # Base branch for PRs
+  base_branch: main
+  
+  # GitHub token (can also use GITHUB_TOKEN env var)
+  github_token: null
+  
+  # Auto-create PR
+  auto_create_pr: true
+  
+  # Labels to add to PR
+  labels:
+    - literature-suggestion
+    - automated
+  
+  # Reviewers to assign (GitHub usernames)
+  reviewers: []
+
+# General Settings
+general:
+  # Output directory for saved results
+  output_dir: ./literature_results
+  
+  # Save intermediate results
+  save_results: true
+  
+  # Log level (DEBUG, INFO, WARNING, ERROR)
+  log_level: INFO
