@@ -106,8 +106,8 @@ class SciBERTRelevanceScorer:
         # Cosine similarity
         similarity = np.dot(embedding1, embedding2) / (norm1 * norm2)
         
-        # Convert to 0-1 range (from -1 to 1)
-        similarity = (similarity + 1) / 2
+        # Clamp to [-1, 1] range to handle numerical errors
+        similarity = np.clip(similarity, -1.0, 1.0)
         
         return float(similarity)
     

@@ -112,7 +112,7 @@ class SemanticScholarSearch:
 class ArXivSearch:
     """Search engine for arXiv API."""
     
-    BASE_URL = "http://export.arxiv.org/api/query"
+    BASE_URL = "https://export.arxiv.org/api/query"
     
     def search(self, query: str, limit: int = 10) -> List[Paper]:
         """

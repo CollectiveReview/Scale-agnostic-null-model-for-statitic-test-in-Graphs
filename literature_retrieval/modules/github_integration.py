@@ -108,8 +108,9 @@ class GitHubIntegration:
                     sha=existing_file.sha,
                     branch=branch_name
                 )
-            except:
+            except Exception as e:
                 # File doesn't exist, create it
+                logger.debug(f"File doesn't exist, creating new: {e}")
                 repo.create_file(
                     path=file_path,
                     message=f"Add literature suggestions for {topic}",
