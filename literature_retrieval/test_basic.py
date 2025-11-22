@@ -135,7 +135,7 @@ def test_search_engine_structure():
                 abstract="Abstract",
                 year=2023,
                 venue="V",
-                url="http://example.com",
+                url="https://example.com",
                 doi="10.1234/same",
                 citations=10,
                 source="source1"
@@ -146,7 +146,7 @@ def test_search_engine_structure():
                 abstract="Abstract",
                 year=2023,
                 venue="V",
-                url="http://example.com",
+                url="https://example.com",
                 doi="10.1234/same",
                 citations=10,
                 source="source2"
@@ -157,7 +157,7 @@ def test_search_engine_structure():
                 abstract="Other",
                 year=2023,
                 venue="V",
-                url="http://example.com/2",
+                url="https://example.com/2",
                 doi="10.1234/different",
                 citations=5,
                 source="source1"

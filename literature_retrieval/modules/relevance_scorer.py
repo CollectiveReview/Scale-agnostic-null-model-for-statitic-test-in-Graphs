@@ -94,7 +94,7 @@ class SciBERTRelevanceScorer:
             embedding2: Second embedding vector
             
         Returns:
-            Cosine similarity score (0-1)
+            Cosine similarity score (-1 to 1, where 1 is identical, 0 is orthogonal, -1 is opposite)
         """
         # Normalize vectors
         norm1 = np.linalg.norm(embedding1)
